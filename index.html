@@ -6,7 +6,6 @@
     <title>RZD Tickets — Поиск билетов</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Сброс стилей */
         * {
             margin: 0;
             padding: 0;
@@ -33,10 +32,6 @@
             transition: all 0.3s ease;
         }
 
-        .container:hover {
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
-        }
-
         h1 {
             color: #2c3e50;
             text-align: center;
@@ -46,6 +41,7 @@
 
         .form-group {
             margin-bottom: 20px;
+            position: relative;
         }
 
         label {
@@ -97,11 +93,37 @@
             transform: translateY(-2px);
         }
 
-        button:active {
-            transform: translateY(0);
+        /* Стили для выпадающего списка городов */
+        .autocomplete {
+            position: relative;
+            display: inline-block;
+            width: 100%;
         }
 
-        /* Адаптивность */
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+
         @media (max-width: 768px) {
             .row {
                 flex-direction: column;
@@ -117,11 +139,15 @@
             <div class="row">
                 <div class="col form-group">
                     <label for="from">Откуда</label>
-                    <input type="text" id="from" placeholder="Москва" required>
+                    <div class="autocomplete">
+                        <input type="text" id="from" placeholder="Москва" required>
+                    </div>
                 </div>
                 <div class="col form-group">
                     <label for="to">Куда</label>
-                    <input type="text" id="to" placeholder="Санкт-Петербург" required>
+                    <div class="autocomplete">
+                        <input type="text" id="to" placeholder="Санкт-Петербург" required>
+                    </div>
                 </div>
             </div>
             <div class="row">
@@ -146,9 +172,65 @@
     </div>
 
     <script>
-        document.getElementById('ticketForm').addEventListener('submit', function(e) {
+        // Список городов (можно расширить)
+        const cities = [
+            "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань",
+            "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону",
+            "Уфа", "Красноярск", "Пермь", "Воронеж", "Волгоград"
+        ];
+
+        // Инициализация автодополнения для полей "Откуда" и "Куда"
+        initAutocomplete("from", cities);
+        initAutocomplete("to", cities);
+
+        // Функция для автодополнения
+        function initAutocomplete(id, cities) {
+            const input = document.getElementById(id);
+            const autocompleteContainer = input.parentElement;
+
+            input.addEventListener("input", function() {
+                const value = this.value.toLowerCase();
+                const filteredCities = cities.filter(city => 
+                    city.toLowerCase().includes(value)
+                );
+
+                // Удаляем старый список
+                const oldList = autocompleteContainer.querySelector(".autocomplete-items");
+                if (oldList) oldList.remove();
+
+                // Не показываем список, если поле пустое или нет совпадений
+                if (!value || filteredCities.length === 0) return;
+
+                // Создаём новый список
+                const list = document.createElement("div");
+                list.setAttribute("class", "autocomplete-items");
+
+                filteredCities.forEach(city => {
+                    const item = document.createElement("div");
+                    item.textContent = city;
+                    item.addEventListener("click", function() {
+                        input.value = city;
+                        list.remove();
+                    });
+                    list.appendChild(item);
+                });
+
+                autocompleteContainer.appendChild(list);
+            });
+
+            // Закрываем список при клике вне его
+            document.addEventListener("click", function(e) {
+                if (e.target !== input) {
+                    const list = autocompleteContainer.querySelector(".autocomplete-items");
+                    if (list) list.remove();
+                }
+            });
+        }
+
+        // Обработчик формы
+        document.getElementById("ticketForm").addEventListener("submit", function(e) {
             e.preventDefault();
-            alert('Поиск билетов выполнен! (Это демо-версия)');
+            alert("Поиск билетов выполнен! (Это демо-версия)");
         });
     </script>
 </body>
