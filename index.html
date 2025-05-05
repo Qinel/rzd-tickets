@@ -117,6 +117,12 @@
             font-size: 15px;
         }
         
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(255,140,0,0.2);
+        }
+        
         .swap-btn {
             background: var(--gray);
             border: none;
@@ -139,6 +145,10 @@
             cursor: pointer;
             font-weight: bold;
             font-size: 15px;
+        }
+        
+        .search-btn:hover {
+            background: var(--primary-light);
         }
         
         /* Блок популярных направлений */
@@ -171,6 +181,12 @@
             background-size: cover;
             background-position: center;
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+        
+        .route-card:hover {
+            transform: translateY(-5px);
         }
         
         .route-card::before {
@@ -313,7 +329,7 @@
             <h2 class="section-title">Популярные направления</h2>
             
             <div class="routes-grid">
-                <!-- Большая карточка -->
+                <!-- Москва - Санкт-Петербург -->
                 <div class="route-card large" style="background-image: url('https://images.unsplash.com/photo-1513326738677-b964603b136d?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
                     <div class="route-content">
                         <span class="discount-badge">-25%</span>
@@ -322,45 +338,48 @@
                     </div>
                 </div>
                 
-                <!-- Маленькие карточки -->
-                <div class="route-card" style="background-image: url('https://images.unsplash.com/photo-1551867633-194f125bddfa?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                <!-- Москва - Тверь -->
+                <div class="route-card" style="background-image: url('https://images.unsplash.com/photo-1637160967973-8790e386c5b2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
                     <div class="route-content">
                         <span class="discount-badge">-15%</span>
-                        <h3 class="route-title">Москва → Казань</h3>
-                        <p class="route-price">от 1 800 ₽ <span class="old-price">2 100 ₽</span></p>
+                        <h3 class="route-title">Москва → Тверь</h3>
+                        <p class="route-price">от 800 ₽ <span class="old-price">950 ₽</span></p>
                     </div>
                 </div>
                 
-                <div class="route-card" style="background-image: url('https://images.unsplash.com/photo-1529655683826-aba9b3e77383?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
-                    <div class="route-content">
-                        <span class="discount-badge">-10%</span>
-                        <h3 class="route-title">Санкт-Петербург → Петрозаводск</h3>
-                        <p class="route-price">от 900 ₽ <span class="old-price">1 000 ₽</span></p>
-                    </div>
-                </div>
-                
-                <!-- Еще карточки -->
-                <div class="route-card" style="background-image: url('https://images.unsplash.com/photo-1549877452-9c387954fbc2?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
-                    <div class="route-content">
-                        <span class="discount-badge">-20%</span>
-                        <h3 class="route-title">Москва → Нижний Новгород</h3>
-                        <p class="route-price">от 1 500 ₽ <span class="old-price">1 900 ₽</span></p>
-                    </div>
-                </div>
-                
-                <div class="route-card large" style="background-image: url('https://images.unsplash.com/photo-1520106212299-d99c443e4568?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
-                    <div class="route-content">
-                        <span class="discount-badge">-30%</span>
-                        <h3 class="route-title">Москва → Сочи</h3>
-                        <p class="route-price">от 2 500 ₽ <span class="old-price">3 600 ₽</span></p>
-                    </div>
-                </div>
-                
+                <!-- Санкт-Петербург - Выборг -->
                 <div class="route-card" style="background-image: url('https://images.unsplash.com/photo-1596484552834-03a58b42793e?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
                     <div class="route-content">
                         <span class="discount-badge">-10%</span>
-                        <h3 class="route-title">Санкт-Петербург → Великий Новгород</h3>
-                        <p class="route-price">от 800 ₽ <span class="old-price">900 ₽</span></p>
+                        <h3 class="route-title">Санкт-Петербург → Выборг</h3>
+                        <p class="route-price">от 600 ₽ <span class="old-price">700 ₽</span></p>
+                    </div>
+                </div>
+                
+                <!-- Москва - Великий Новгород -->
+                <div class="route-card" style="background-image: url('https://images.unsplash.com/photo-1631023052301-60bd84effd0a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="route-content">
+                        <span class="discount-badge">-20%</span>
+                        <h3 class="route-title">Москва → Великий Новгород</h3>
+                        <p class="route-price">от 1 400 ₽ <span class="old-price">1 800 ₽</span></p>
+                    </div>
+                </div>
+                
+                <!-- Санкт-Петербург - Петрозаводск -->
+                <div class="route-card large" style="background-image: url('https://images.unsplash.com/photo-1529655683826-aba9b3e77383?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="route-content">
+                        <span class="discount-badge">-30%</span>
+                        <h3 class="route-title">Санкт-Петербург → Петрозаводск</h3>
+                        <p class="route-price">от 900 ₽ <span class="old-price">1 300 ₽</span></p>
+                    </div>
+                </div>
+                
+                <!-- Москва - Ярославль -->
+                <div class="route-card" style="background-image: url('https://images.unsplash.com/photo-1619983081563-430f6c4f0e8f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80')">
+                    <div class="route-content">
+                        <span class="discount-badge">-15%</span>
+                        <h3 class="route-title">Москва → Ярославль</h3>
+                        <p class="route-price">от 1 100 ₽ <span class="old-price">1 300 ₽</span></p>
                     </div>
                 </div>
             </div>
