@@ -288,6 +288,193 @@
                 </form>
             </section>
             
+            <!-- Добавьте этот блок после формы поиска (перед секцией контактов) -->
+<section class="popular-routes">
+    <h2 class="section-title">Популярные направления</h2>
+    
+    <div class="routes-grid">
+        <!-- Маршрут 1 -->
+        <div class="route-card">
+            <div class="route-info">
+                <div class="cities">
+                    <span class="from">Москва</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span class="to">Санкт-Петербург</span>
+                </div>
+                <div class="details">
+                    <span class="price">от 1 200 ₽</span>
+                    <span class="duration">≈ 4 ч</span>
+                </div>
+            </div>
+            <button class="book-btn">Купить билет</button>
+        </div>
+        
+        <!-- Маршрут 2 -->
+        <div class="route-card">
+            <div class="route-info">
+                <div class="cities">
+                    <span class="from">Москва</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span class="to">Казань</span>
+                </div>
+                <div class="details">
+                    <span class="price">от 1 800 ₽</span>
+                    <span class="duration">≈ 11 ч</span>
+                </div>
+            </div>
+            <button class="book-btn">Купить билет</button>
+        </div>
+        
+        <!-- Маршрут 3 -->
+        <div class="route-card">
+            <div class="route-info">
+                <div class="cities">
+                    <span class="from">Москва</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span class="to">Сочи</span>
+                </div>
+                <div class="details">
+                    <span class="price">от 2 500 ₽</span>
+                    <span class="duration">≈ 24 ч</span>
+                </div>
+            </div>
+            <button class="book-btn">Купить билет</button>
+        </div>
+        
+        <!-- Маршрут 4 -->
+        <div class="route-card">
+            <div class="route-info">
+                <div class="cities">
+                    <span class="from">Санкт-Петербург</span>
+                    <i class="fas fa-arrow-right"></i>
+                    <span class="to">Петрозаводск</span>
+                </div>
+                <div class="details">
+                    <span class="price">от 900 ₽</span>
+                    <span class="duration">≈ 5 ч</span>
+                </div>
+            </div>
+            <button class="book-btn">Купить билет</button>
+        </div>
+    </div>
+</section>
+
+<style>
+    /* Стили для блока популярных направлений */
+    .popular-routes {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        padding: 25px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+    
+    .section-title {
+        color: var(--primary);
+        margin-bottom: 20px;
+        font-size: 22px;
+        font-weight: 600;
+    }
+    
+    .routes-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 15px;
+    }
+    
+    .route-card {
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 15px;
+        display: flex;
+        flex-direction: column;
+        transition: all 0.2s;
+    }
+    
+    .route-card:hover {
+        border-color: var(--primary);
+        box-shadow: 0 2px 8px rgba(255,140,0,0.1);
+    }
+    
+    .route-info {
+        flex: 1;
+    }
+    
+    .cities {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        font-weight: 500;
+    }
+    
+    .cities i {
+        color: var(--primary);
+        font-size: 14px;
+    }
+    
+    .details {
+        display: flex;
+        justify-content: space-between;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .price {
+        color: var(--primary);
+        font-weight: bold;
+    }
+    
+    .book-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 10px;
+        border-radius: 4px;
+        margin-top: 15px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.2s;
+    }
+    
+    .book-btn:hover {
+        background: var(--primary-light);
+    }
+    
+    @media (max-width: 768px) {
+        .routes-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    // Добавьте этот скрипт для обработки кликов по кнопкам
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.book-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const route = this.closest('.route-card');
+                const from = route.querySelector('.from').textContent;
+                const to = route.querySelector('.to').textContent;
+                
+                // Заполняем форму поиска
+                document.getElementById('fromInput').value = from;
+                document.getElementById('toInput').value = to;
+                
+                // Показываем форму поиска
+                showSection('search');
+                window.history.pushState(null, null, '#search');
+                
+                // Прокручиваем к форме
+                document.getElementById('ticketForm').scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    });
+</script>
+
             <!-- Секция контактов -->
             <section id="contacts" class="contacts-section">
                 <h2 style="margin-bottom: 20px; color: var(--primary);">Контакты</h2>
