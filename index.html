@@ -3,9 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RZD Билеты</title>
+    <title>Поиск ж/д билетов</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        :root {
+            --primary-color: #FF8C00;
+            --secondary-color: #FFA500;
+            --text-color: #333;
+            --light-gray: #f5f5f5;
+            --border-color: #ddd;
+        }
+        
         * {
             margin: 0;
             padding: 0;
@@ -14,184 +22,352 @@
         }
         
         body {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            background: var(--light-gray);
+            padding: 20px;
             min-height: 100vh;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            padding: 20px;
+            justify-content: center;
         }
         
-        .container {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        .search-container {
             width: 100%;
-            max-width: 800px;
-            padding: 40px;
+            max-width: 1200px;
         }
         
-        h1 {
-            color: #2c3e50;
-            text-align: center;
-            margin-bottom: 30px;
+        .search-form {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 15px;
+            display: flex;
+            align-items: flex-end;
+            flex-wrap: wrap;
+            gap: 10px;
+            position: relative;
         }
         
         .form-group {
-            margin-bottom: 20px;
             position: relative;
+            flex: 1;
+            min-width: 180px;
         }
         
-        .autocomplete {
-            position: relative;
+        .compact-group {
+            flex: 0 0 140px;
         }
         
-        .autocomplete-items {
-            position: absolute;
-            border: 1px solid #d4d4d4;
-            border-top: none;
-            z-index: 99;
-            top: 100%;
-            left: 0;
-            right: 0;
-            background: white;
-        }
-        
-        .autocomplete-item {
-            padding: 10px;
+        .swap-btn {
+            background: var(--light-gray);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
             cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-bottom: 22px;
+            transition: all 0.2s;
         }
         
-        .autocomplete-item:hover {
-            background: #f1f1f1;
+        .swap-btn:hover {
+            background: #e0e0e0;
+            transform: rotate(180deg);
         }
         
-        input, select {
+        .form-label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+        
+        .form-input {
             width: 100%;
-            padding: 12px;
-            border: 1px solid #ddd;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
             border-radius: 4px;
-            margin-top: 5px;
+            font-size: 16px;
+            transition: all 0.2s;
         }
         
-        button {
-            background: #3498db;
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(255,140,0,0.2);
+        }
+        
+        .search-btn {
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px;
-            width: 100%;
+            padding: 12px 24px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 16px;
+            font-weight: bold;
+            height: 46px;
+            flex-shrink: 0;
+            transition: background 0.2s;
         }
         
-        .row {
-            display: flex;
-            gap: 15px;
+        .search-btn:hover {
+            background: var(--secondary-color);
         }
         
-        .col {
-            flex: 1;
+        .autocomplete-dropdown {
+            position: absolute;
+            width: calc(100% - 2px);
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-top: none;
+            border-radius: 0 0 4px 4px;
+            background: white;
+            z-index: 1000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: none;
         }
         
-        @media (max-width: 600px) {
-            .row {
+        .dropdown-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        
+        .dropdown-item:hover {
+            background: var(--light-gray);
+        }
+        
+        .date-input-wrapper {
+            position: relative;
+        }
+        
+        .date-clear {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            cursor: pointer;
+            display: none;
+        }
+        
+        @media (max-width: 900px) {
+            .search-form {
                 flex-direction: column;
-                gap: 0;
+                align-items: stretch;
+            }
+            
+            .form-group, .compact-group {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .swap-btn {
+                align-self: center;
+                margin: 5px 0;
+                transform: rotate(90deg);
+            }
+            
+            .swap-btn:hover {
+                transform: rotate(270deg);
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1><i class="fas fa-train"></i> Поиск ж/д билетов</h1>
-        <form id="ticketForm">
-            <div class="row">
-                <div class="col form-group">
-                    <label>Откуда</label>
-                    <div class="autocomplete">
-                        <input type="text" id="from" placeholder="Город отправления" autocomplete="off">
-                        <div id="fromDropdown" class="autocomplete-items"></div>
-                    </div>
-                </div>
-                <div class="col form-group">
-                    <label>Куда</label>
-                    <div class="autocomplete">
-                        <input type="text" id="to" placeholder="Город прибытия" autocomplete="off">
-                        <div id="toDropdown" class="autocomplete-items"></div>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col form-group">
-                    <label>Дата</label>
-                    <input type="date" id="date">
-                </div>
-                <div class="col form-group">
-                    <label>Пассажиры</label>
-                    <select id="passengers">
-                        <option value="1">1 пассажир</option>
-                        <option value="2">2 пассажира</option>
-                        <option value="3">3 пассажира</option>
-                    </select>
-                </div>
-            </div>
+    <div class="search-container">
+        <form id="ticketForm" class="search-form">
             <div class="form-group">
-                <button type="submit">Найти билеты</button>
+                <label class="form-label">Откуда</label>
+                <input type="text" id="fromInput" class="form-input" placeholder="Город или станция" autocomplete="off">
+                <div id="fromDropdown" class="autocomplete-dropdown"></div>
             </div>
+            
+            <button type="button" class="swap-btn" id="swapBtn" aria-label="Поменять местами">
+                <i class="fas fa-exchange-alt"></i>
+            </button>
+            
+            <div class="form-group">
+                <label class="form-label">Куда</label>
+                <input type="text" id="toInput" class="form-input" placeholder="Город или станция" autocomplete="off">
+                <div id="toDropdown" class="autocomplete-dropdown"></div>
+            </div>
+            
+            <div class="form-group compact-group">
+                <label class="form-label">Туда</label>
+                <div class="date-input-wrapper">
+                    <input type="date" id="departureDate" class="form-input">
+                    <span class="date-clear" id="clearDeparture">&times;</span>
+                </div>
+            </div>
+            
+            <div class="form-group compact-group">
+                <label class="form-label">Обратно</label>
+                <div class="date-input-wrapper">
+                    <input type="date" id="returnDate" class="form-input">
+                    <span class="date-clear" id="clearReturn">&times;</span>
+                </div>
+            </div>
+            
+            <div class="form-group compact-group">
+                <label class="form-label">Пассажиры</label>
+                <select id="passengers" class="form-input">
+                    <option value="1">1 пассажир</option>
+                    <option value="2">2 пассажира</option>
+                    <option value="3">3 пассажира</option>
+                    <option value="4">4 пассажира</option>
+                </select>
+            </div>
+            
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i> Найти
+            </button>
         </form>
     </div>
 
     <script>
+        // Полный список городов и станций РЖД (сокращенный вариант)
         const cities = [
-            "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", 
-            "Казань", "Нижний Новгород", "Челябинск", "Самара"
+            "Москва (Курский вокзал)", "Москва (Ярославский вокзал)", "Москва (Ленинградский вокзал)",
+            "Санкт-Петербург (Главный)", "Санкт-Петербург (Ладожский)", "Санкт-Петербург (Московский)",
+            "Новосибирск (Главный)", "Екатеринбург (Пассажирский)", "Казань (Пассажирский)",
+            "Нижний Новгород (Московский)", "Челябинск (Главный)", "Самара (Главный)",
+            "Омск (Главный)", "Ростов-на-Дону (Главный)", "Уфа (Главный)",
+            "Красноярск (Главный)", "Воронеж (Главный)", "Волгоград (Главный)",
+            "Краснодар (Главный)", "Сочи (Главный)", "Тюмень (Главный)",
+            "Иркутск (Главный)", "Владивосток (Главный)", "Хабаровск (Главный)"
         ];
-        
-        function initAutocomplete(inputElement, dropdownElement) {
-            inputElement.addEventListener('input', function() {
-                const value = this.value.toLowerCase();
-                dropdownElement.innerHTML = '';
+
+        // Инициализация автодополнения
+        function initAutocomplete(inputId, dropdownId) {
+            const input = document.getElementById(inputId);
+            const dropdown = document.getElementById(dropdownId);
+            
+            input.addEventListener('input', function() {
+                const value = this.value.trim().toLowerCase();
+                dropdown.innerHTML = '';
                 
-                if (!value) return;
+                if (!value) {
+                    dropdown.style.display = 'none';
+                    return;
+                }
                 
                 const matches = cities.filter(city => 
                     city.toLowerCase().includes(value)
-                );
+                ).slice(0, 8);
                 
-                matches.forEach(city => {
-                    const item = document.createElement('div');
-                    item.className = 'autocomplete-item';
-                    item.textContent = city;
-                    item.addEventListener('click', function() {
-                        inputElement.value = city;
-                        dropdownElement.innerHTML = '';
+                if (matches.length === 0) {
+                    const noResults = document.createElement('div');
+                    noResults.className = 'dropdown-item';
+                    noResults.textContent = 'Ничего не найдено';
+                    dropdown.appendChild(noResults);
+                } else {
+                    matches.forEach(city => {
+                        const item = document.createElement('div');
+                        item.className = 'dropdown-item';
+                        item.textContent = city;
+                        item.addEventListener('click', function() {
+                            input.value = city;
+                            dropdown.style.display = 'none';
+                        });
+                        dropdown.appendChild(item);
                     });
-                    dropdownElement.appendChild(item);
-                });
+                }
+                
+                dropdown.style.display = 'block';
+            });
+            
+            input.addEventListener('focus', function() {
+                if (this.value && dropdown.children.length > 0) {
+                    dropdown.style.display = 'block';
+                }
             });
             
             document.addEventListener('click', function(e) {
-                if (e.target !== inputElement) {
-                    dropdownElement.innerHTML = '';
+                if (e.target !== input) {
+                    dropdown.style.display = 'none';
                 }
             });
         }
-        
+
+        // Установка дат
+        function setupDates() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            const formatDate = (date) => date.toISOString().split('T')[0];
+            
+            document.getElementById('departureDate').min = formatDate(today);
+            document.getElementById('returnDate').min = formatDate(today);
+            
+            // Очистка дат
+            document.getElementById('clearDeparture').addEventListener('click', function() {
+                document.getElementById('departureDate').value = '';
+                this.style.display = 'none';
+            });
+            
+            document.getElementById('clearReturn').addEventListener('click', function() {
+                document.getElementById('returnDate').value = '';
+                this.style.display = 'none';
+            });
+            
+            document.getElementById('departureDate').addEventListener('input', function() {
+                document.getElementById('clearDeparture').style.display = this.value ? 'block' : 'none';
+                document.getElementById('returnDate').min = this.value || formatDate(today);
+            });
+            
+            document.getElementById('returnDate').addEventListener('input', function() {
+                document.getElementById('clearReturn').style.display = this.value ? 'block' : 'none';
+            });
+        }
+
+        // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', function() {
-            initAutocomplete(
-                document.getElementById('from'),
-                document.getElementById('fromDropdown')
-            );
+            // Автодополнение
+            initAutocomplete('fromInput', 'fromDropdown');
+            initAutocomplete('toInput', 'toDropdown');
             
-            initAutocomplete(
-                document.getElementById('to'),
-                document.getElementById('toDropdown')
-            );
+            // Настройка дат
+            setupDates();
             
+            // Обмен городов
+            document.getElementById('swapBtn').addEventListener('click', function() {
+                const fromInput = document.getElementById('fromInput');
+                const toInput = document.getElementById('toInput');
+                const temp = fromInput.value;
+                fromInput.value = toInput.value;
+                toInput.value = temp;
+            });
+            
+            // Отправка формы
             document.getElementById('ticketForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                alert('Форма работает!');
+                
+                const from = document.getElementById('fromInput').value.trim();
+                const to = document.getElementById('toInput').value.trim();
+                const departureDate = document.getElementById('departureDate').value;
+                const returnDate = document.getElementById('returnDate').value;
+                const passengers = document.getElementById('passengers').value;
+                
+                if (!from || !to) {
+                    alert('Пожалуйста, укажите города отправления и прибытия');
+                    return;
+                }
+                
+                // Здесь будет реальный поиск билетов
+                const message = `Поиск билетов:\n${from} → ${to}\n` +
+                                `Дата: ${departureDate || 'не указана'}` +
+                                (returnDate ? `, обратно: ${returnDate}` : '') +
+                                `\nПассажиров: ${passengers}`;
+                
+                alert(message);
             });
         });
     </script>
