@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Поиск и покупка ЖД билетов</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <h1>Поиск и покупка ЖД билетов</h1>
+    </header>
+
+    <section class="search">
+        <h2>Найти билет</h2>
+        <form id="searchForm">
+            <label for="from">Откуда:</label>
+            <select id="from" name="from">
+                <option value="moscow">Москва</option>
+                <option value="stpetersburg">Санкт-Петербург</option>
+                <option value="ekaterinburg">Екатеринбург</option>
+            </select>
+
+            <label for="to">Куда:</label>
+            <select id="to" name="to">
+                <option value="moscow">Москва</option>
+                <option value="stpetersburg">Санкт-Петербург</option>
+                <option value="ekaterinburg">Екатеринбург</option>
+            </select>
+
+            <label for="date">Дата:</label>
+            <input type="date" id="date" name="date">
+
+            <button type="submit">Поиск</button>
+        </form>
+    </section>
+
+    <section class="results" id="results">
+        <h2>Результаты поиска</h2>
+        <!-- Билеты будут отображаться здесь -->
+    </section>
+
+    <section id="ticketModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h3>Информация о билете</h3>
+            <p id="ticketDetails"></p>
+            <button id="buyButton" onclick="buyTicket()">Купить билет</button>
+        </div>
+    </section>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
