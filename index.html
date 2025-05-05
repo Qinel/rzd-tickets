@@ -475,6 +475,54 @@
     });
 </script>
 
+<!-- Популярные направления -->
+<section id="popular-routes" style="background: white; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px; margin: 20px auto; max-width: 1200px;">
+    <h2 style="color: #FF8C00; margin-bottom: 20px; font-size: 22px; font-weight: 600;">Популярные направления</h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 15px;">
+        <!-- Маршрут 1 -->
+        <div style="border: 1px solid #ddd; border-radius: 6px; padding: 15px; transition: all 0.2s;" 
+             onmouseover="this.style.borderColor='#FF8C00';this.style.boxShadow='0 2px 8px rgba(255,140,0,0.1)'" 
+             onmouseout="this.style.borderColor='#ddd';this.style.boxShadow='none'">
+            <div style="margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-weight: 500;">
+                    <span>Москва</span>
+                    <i class="fas fa-arrow-right" style="color: #FF8C00; font-size: 14px;"></i>
+                    <span>Санкт-Петербург</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; color: #666; font-size: 14px; margin-top: 8px;">
+                    <span style="color: #FF8C00; font-weight: bold;">от 1 200 ₽</span>
+                    <span>≈ 4 ч</span>
+                </div>
+            </div>
+            <button class="book-btn" 
+                    style="background: #FF8C00; color: white; border: none; padding: 10px; border-radius: 4px; width: 100%; cursor: pointer; font-weight: 500; transition: background 0.2s;" 
+                    onmouseover="this.style.background='#FFA500'" 
+                    onmouseout="this.style.background='#FF8C00'"
+                    onclick="fillSearchForm('Москва', 'Санкт-Петербург')">
+                Купить билет
+            </button>
+        </div>
+        
+        <!-- Остальные маршруты аналогично -->
+    </div>
+</section>
+
+<script>
+// Добавьте этот код в конец вашего существующего script
+function fillSearchForm(from, to) {
+    document.getElementById('fromInput').value = from;
+    document.getElementById('toInput').value = to;
+    document.getElementById('contacts').style.display = 'none';
+    document.getElementById('ticketForm').style.display = 'flex';
+    document.getElementById('popular-routes').style.display = 'block';
+    window.scrollTo({
+        top: document.getElementById('ticketForm').offsetTop - 20,
+        behavior: 'smooth'
+    });
+}
+</script>
+
             <!-- Секция контактов -->
             <section id="contacts" class="contacts-section">
                 <h2 style="margin-bottom: 20px; color: var(--primary);">Контакты</h2>
