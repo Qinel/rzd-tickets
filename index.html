@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RZD Tickets — Поиск билетов</title>
+    <title>RZD Билеты</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Все стили остаются такими же, как в предыдущем варианте */
         * {
             margin: 0;
             padding: 0;
@@ -14,40 +13,92 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
-        /* ... (остальные стили без изменений) ... */
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
         
-        /* Добавляем важные стили для автодополнения */
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        
         .autocomplete {
             position: relative;
-            width: 100%;
         }
         
         .autocomplete-items {
             position: absolute;
             border: 1px solid #d4d4d4;
-            border-radius: 0 0 8px 8px;
+            border-top: none;
             z-index: 99;
-            top: calc(100% - 8px);
+            top: 100%;
             left: 0;
             right: 0;
             background: white;
-            max-height: 200px;
-            overflow-y: auto;
         }
         
         .autocomplete-item {
-            padding: 10px 15px;
+            padding: 10px;
             cursor: pointer;
-            border-bottom: 1px solid #f1f1f1;
         }
         
         .autocomplete-item:hover {
-            background-color: #f8f8f8;
+            background: #f1f1f1;
         }
         
-        .autocomplete-active {
-            background-color: #3498db !important;
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        button {
+            background: #3498db;
             color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .row {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .col {
+            flex: 1;
+        }
+        
+        @media (max-width: 600px) {
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
         }
     </style>
 </head>
@@ -57,103 +108,90 @@
         <form id="ticketForm">
             <div class="row">
                 <div class="col form-group">
-                    <label for="fromInput">Откуда</label>
+                    <label>Откуда</label>
                     <div class="autocomplete">
-                        <input type="text" id="fromInput" placeholder="Москва" autocomplete="off" required>
+                        <input type="text" id="from" placeholder="Город отправления" autocomplete="off">
                         <div id="fromDropdown" class="autocomplete-items"></div>
                     </div>
                 </div>
                 <div class="col form-group">
-                    <label for="toInput">Куда</label>
+                    <label>Куда</label>
                     <div class="autocomplete">
-                        <input type="text" id="toInput" placeholder="Санкт-Петербург" autocomplete="off" required>
+                        <input type="text" id="to" placeholder="Город прибытия" autocomplete="off">
                         <div id="toDropdown" class="autocomplete-items"></div>
                     </div>
                 </div>
             </div>
-            <!-- Остальная часть формы без изменений -->
+            <div class="row">
+                <div class="col form-group">
+                    <label>Дата</label>
+                    <input type="date" id="date">
+                </div>
+                <div class="col form-group">
+                    <label>Пассажиры</label>
+                    <select id="passengers">
+                        <option value="1">1 пассажир</option>
+                        <option value="2">2 пассажира</option>
+                        <option value="3">3 пассажира</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit">Найти билеты</button>
+            </div>
         </form>
     </div>
 
     <script>
-        // Улучшенный список городов (можно расширить)
         const cities = [
-            "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", "Казань",
-            "Нижний Новгород", "Челябинск", "Самара", "Омск", "Ростов-на-Дону",
-            "Уфа", "Красноярск", "Пермь", "Воронеж", "Волгоград",
-            "Сочи", "Краснодар", "Саратов", "Тюмень", "Ижевск"
+            "Москва", "Санкт-Петербург", "Новосибирск", "Екатеринбург", 
+            "Казань", "Нижний Новгород", "Челябинск", "Самара"
         ];
-
-        // Инициализация автодополнения
-        function initAutocomplete(inputId, dropdownId) {
-            const input = document.getElementById(inputId);
-            const dropdown = document.getElementById(dropdownId);
-            let currentFocus = -1;
-
-            input.addEventListener("input", function() {
-                const val = this.value.trim();
-                dropdown.innerHTML = "";
-                currentFocus = -1;
+        
+        function initAutocomplete(inputElement, dropdownElement) {
+            inputElement.addEventListener('input', function() {
+                const value = this.value.toLowerCase();
+                dropdownElement.innerHTML = '';
                 
-                if (!val) return;
+                if (!value) return;
                 
                 const matches = cities.filter(city => 
-                    city.toLowerCase().includes(val.toLowerCase())
+                    city.toLowerCase().includes(value)
                 );
                 
-                matches.slice(0, 5).forEach((city, index) => {
-                    const item = document.createElement("div");
-                    item.className = "autocomplete-item";
-                    item.innerHTML = `<strong>${city.substring(0, val.length)}</strong>${city.substring(val.length)}`;
-                    item.addEventListener("click", function() {
-                        input.value = city;
-                        dropdown.innerHTML = "";
+                matches.forEach(city => {
+                    const item = document.createElement('div');
+                    item.className = 'autocomplete-item';
+                    item.textContent = city;
+                    item.addEventListener('click', function() {
+                        inputElement.value = city;
+                        dropdownElement.innerHTML = '';
                     });
-                    dropdown.appendChild(item);
+                    dropdownElement.appendChild(item);
                 });
             });
-
-            input.addEventListener("keydown", function(e) {
-                const items = dropdown.querySelectorAll(".autocomplete-item");
-                
-                if (e.keyCode === 40) { // Стрелка вниз
-                    currentFocus++;
-                    setActive(items);
-                } else if (e.keyCode === 38) { // Стрелка вверх
-                    currentFocus--;
-                    setActive(items);
-                } else if (e.keyCode === 13) { // Enter
-                    e.preventDefault();
-                    if (currentFocus > -1 && items[currentFocus]) {
-                        items[currentFocus].click();
-                    }
-                }
-            });
-
-            function setActive(items) {
-                items.forEach(item => item.classList.remove("autocomplete-active"));
-                if (currentFocus >= items.length) currentFocus = 0;
-                if (currentFocus < 0) currentFocus = items.length - 1;
-                if (items[currentFocus]) items[currentFocus].classList.add("autocomplete-active");
-            }
-
-            document.addEventListener("click", function(e) {
-                if (e.target !== input && e.target !== dropdown) {
-                    dropdown.innerHTML = "";
+            
+            document.addEventListener('click', function(e) {
+                if (e.target !== inputElement) {
+                    dropdownElement.innerHTML = '';
                 }
             });
         }
-
-        // Инициализация для обоих полей
-        document.addEventListener("DOMContentLoaded", function() {
-            initAutocomplete("fromInput", "fromDropdown");
-            initAutocomplete("toInput", "toDropdown");
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initAutocomplete(
+                document.getElementById('from'),
+                document.getElementById('fromDropdown')
+            );
             
-            document.getElementById("ticketForm").addEventListener("submit", function(e) {
+            initAutocomplete(
+                document.getElementById('to'),
+                document.getElementById('toDropdown')
+            );
+            
+            document.getElementById('ticketForm').addEventListener('submit', function(e) {
                 e.preventDefault();
-                const from = document.getElementById("fromInput").value;
-                const to = document.getElementById("toInput").value;
-                alert(`Поиск билетов: ${from} → ${to}\n(Демо-версия)`);
+                alert('Форма работает!');
             });
         });
     </script>
