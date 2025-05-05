@@ -3,52 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Поиск и покупка ЖД билетов</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>RZD Tickets — Поиск билетов</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Сброс стилей */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            padding: 40px;
+            transition: all 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #34495e;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+
+        .row {
+            display: flex;
+            gap: 20px;
+        }
+
+        .col {
+            flex: 1;
+        }
+
+        button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Поиск и покупка ЖД билетов</h1>
-    </header>
-
-    <section class="search">
-        <h2>Найти билет</h2>
-        <form id="searchForm">
-            <label for="from">Откуда:</label>
-            <select id="from" name="from">
-                <option value="moscow">Москва</option>
-                <option value="stpetersburg">Санкт-Петербург</option>
-                <option value="ekaterinburg">Екатеринбург</option>
-            </select>
-
-            <label for="to">Куда:</label>
-            <select id="to" name="to">
-                <option value="moscow">Москва</option>
-                <option value="stpetersburg">Санкт-Петербург</option>
-                <option value="ekaterinburg">Екатеринбург</option>
-            </select>
-
-            <label for="date">Дата:</label>
-            <input type="date" id="date" name="date">
-
-            <button type="submit">Поиск</button>
+    <div class="container">
+        <h1><i class="fas fa-train"></i> Поиск ж/д билетов</h1>
+        <form id="ticketForm">
+            <div class="row">
+                <div class="col form-group">
+                    <label for="from">Откуда</label>
+                    <input type="text" id="from" placeholder="Москва" required>
+                </div>
+                <div class="col form-group">
+                    <label for="to">Куда</label>
+                    <input type="text" id="to" placeholder="Санкт-Петербург" required>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col form-group">
+                    <label for="date">Дата</label>
+                    <input type="date" id="date" required>
+                </div>
+                <div class="col form-group">
+                    <label for="passengers">Пассажиры</label>
+                    <select id="passengers">
+                        <option value="1">1 пассажир</option>
+                        <option value="2">2 пассажира</option>
+                        <option value="3">3 пассажира</option>
+                        <option value="4">4 пассажира</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <button type="submit"><i class="fas fa-search"></i> Найти билеты</button>
+            </div>
         </form>
-    </section>
+    </div>
 
-    <section class="results" id="results">
-        <h2>Результаты поиска</h2>
-        <!-- Билеты будут отображаться здесь -->
-    </section>
-
-    <section id="ticketModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h3>Информация о билете</h3>
-            <p id="ticketDetails"></p>
-            <button id="buyButton" onclick="buyTicket()">Купить билет</button>
-        </div>
-    </section>
-
-    <script src="js/script.js"></script>
+    <script>
+        document.getElementById('ticketForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Поиск билетов выполнен! (Это демо-версия)');
+        });
+    </script>
 </body>
 </html>
