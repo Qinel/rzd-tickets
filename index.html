@@ -167,6 +167,7 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
+            grid-auto-rows: minmax(200px, auto);
         }
         
         .route-card {
@@ -203,6 +204,11 @@
         .route-card.large {
             grid-column: span 2;
             min-height: 250px;
+        }
+        
+        .route-card.tall {
+            grid-row: span 2;
+            min-height: 415px; /* 200px + 200px + 15px gap */
         }
         
         .route-content {
@@ -261,8 +267,11 @@
                 grid-template-columns: 1fr;
             }
             
-            .route-card.large {
+            .route-card.large,
+            .route-card.tall {
                 grid-column: span 1;
+                grid-row: span 1;
+                min-height: 200px;
             }
         }
     </style>
@@ -374,8 +383,8 @@
                     </div>
                 </div>
                 
-                <!-- Москва - Ярославль -->
-                <div class="route-card" style="background-image: url('img/routes/moscow-yaroslavl.jpg')">
+                <!-- Москва - Ярославль (теперь занимает 2 места по вертикали) -->
+                <div class="route-card tall" style="background-image: url('img/routes/moscow-yaroslavl.jpg')">
                     <div class="route-content">
                         <span class="discount-badge">-15%</span>
                         <h3 class="route-title">Москва → Ярославль</h3>
